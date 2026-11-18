@@ -121,6 +121,33 @@
       box-shadow: 0 14px 28px -8px rgba(19, 68, 48, 0.13), 0 4px 10px -2px rgba(22, 30, 26, 0.05);
     }
 
+    /* Bold Member Roster Frame (Anggota Kelompok) */
+    .member-frame {
+      border: 2.5px solid #1B5E43;
+      border-radius: 14px;
+      background-color: #FFFFFF;
+      overflow: hidden;
+      box-shadow: 0 0 0 3px rgba(27, 94, 67, 0.10), 0 6px 14px -4px rgba(19, 68, 48, 0.22);
+    }
+    .member-frame-header {
+      background: linear-gradient(180deg, #E4F0E8 0%, #D3E6DA 100%);
+      border-bottom: 2.5px solid #1B5E43;
+    }
+    .member-frame-list > li {
+      border-bottom: 1.5px solid #BFD3C6;
+    }
+    .member-frame-list > li:last-child {
+      border-bottom: none;
+    }
+    .member-frame-list > li:nth-child(even) {
+      background-color: #F4F8F5;
+    }
+    .member-frame-num {
+      background-color: #1B5E43;
+      color: #FFFFFF;
+      border: 1.5px solid #0F3727;
+    }
+
     /* Inner Compartment Frame inside Cards */
     .sub-frame {
       background-color: #F8FAF8;
@@ -187,10 +214,52 @@
       animation: modalPop 0.18s ease-out;
     }
 
+    /* Shiny Sweep Text Animation for Hero Title */
+    @keyframes heroTitleShine {
+      0% {
+        background-position: 100% 50%;
+      }
+      55%, 100% {
+        background-position: -100% 50%;
+      }
+    }
+    .hero-title-shine {
+      background: linear-gradient(
+        110deg,
+        #ffffff 32%,
+        #fef08a 45%,
+        #ffffff 50%,
+        #fde68a 55%,
+        #ffffff 68%
+      );
+      background-size: 260% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      animation: heroTitleShine 4.5s ease-in-out infinite;
+      filter: drop-shadow(0 2px 10px rgba(254, 240, 138, 0.18));
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-title-shine {
+        animation: none;
+        background: none;
+        color: #FFFFFF;
+        -webkit-text-fill-color: #FFFFFF;
+      }
+    }
+
     /* Print Styles */
     @media print {
       .no-print, .admin-lock-trigger {
         display: none !important;
+      }
+      .hero-title-shine {
+        animation: none !important;
+        background: none !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        filter: none !important;
       }
       .print-show-member {
         display: flex !important;
@@ -207,6 +276,10 @@
         box-shadow: none !important;
         break-inside: avoid;
         border: 1.5px solid #999999;
+      }
+      .member-frame, .member-frame-header, .member-frame-num {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
     }
   </style>
@@ -246,7 +319,7 @@
                 Mode Pengelola Aktif
               </span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 class="inline-block text-2xl sm:text-3xl font-extrabold tracking-tight text-white hero-title-shine">
               Jadwal Tahsin Sahabat Teladan
             </h1>
             <p class="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-2xl">
@@ -302,14 +375,14 @@
           </div>
           <div>
             <h2 class="text-sm font-bold text-ink">Panel Manajemen Admin Tahsin</h2>
-            <p class="text-xs text-muted">Kelola seluruh data Kelompok, Pembimbing, Ruang Kelas/Tempat, dan Anggota secara terpusat.</p>
+            <p class="text-xs text-muted">Kelola seluruh data Kelompok, Pembimbing, Ruang Tempat, dan Anggota secara terpusat.</p>
           </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onclick="refreshAllData()"
+            onclick="refreshAllData({ force: true })"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-line hover:border-brand text-xs font-semibold text-ink transition"
           >
             <svg class="w-3.5 h-3.5 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -355,7 +428,7 @@
           3. Data Pembimbing (<span id="countAdminPembimbing">0</span>)
         </button>
         <button type="button" data-admin-tab="ruang" onclick="switchAdminTab('ruang')" class="admin-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-canvas text-ink border border-line hover:border-brand">
-          4. Ruang Kelas / Tempat (<span id="countAdminRuang">0</span>)
+          4. Tempat (<span id="countAdminRuang">0</span>)
         </button>
         <button type="button" data-admin-tab="anggota" onclick="switchAdminTab('anggota')" class="admin-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-canvas text-ink border border-line hover:border-brand">
           5. Anggota Kelompok (<span id="countAdminAnggota">0</span>)
@@ -547,7 +620,7 @@
                 <th class="py-3.5 px-4">Jenjang</th>
                 <th class="py-3.5 px-4">Nama Kelompok</th>
                 <th class="py-3.5 px-4">Pembimbing</th>
-                <th class="py-3.5 px-4">Ruang / Tempat</th>
+                <th class="py-3.5 px-4">Tempat</th>
                 <th class="py-3.5 px-4">Jadwal</th>
                 <th class="py-3.5 px-4 text-center">Anggota</th>
                 <th class="py-3.5 px-4">Status</th>
@@ -601,7 +674,7 @@
         </div>
       </div>
 
-      <!-- SUB-VIEW C: RUANG KELAS / TEMPAT -->
+      <!-- SUB-VIEW C: RUANG TEMPAT -->
       <div id="adminPanelRuang" class="hidden frame-panel rounded-2xl overflow-hidden">
         <div class="p-5 bg-canvas/70 border-b border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -618,7 +691,7 @@
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            Tambah Ruang / Tempat
+            Tempat
           </button>
         </div>
 
@@ -627,7 +700,7 @@
             <thead>
               <tr class="bg-canvas border-b-2 border-line text-[11px] font-bold uppercase tracking-wider text-muted">
                 <th class="py-3.5 px-4">ID</th>
-                <th class="py-3.5 px-4">Nama Ruang / Tempat</th>
+                <th class="py-3.5 px-4">Nama Tempat</th>
                 <th class="py-3.5 px-4">Gedung / Area Lokasi</th>
                 <th class="py-3.5 px-4 text-center">Kapasitas</th>
                 <th class="py-3.5 px-4">Status</th>
@@ -1160,6 +1233,7 @@
 
     const JENJANG_LIST = ["ALL", "TK", "SD", "SMP", "SMA", "Operasional"];
     const SESSION_STORAGE_KEY = "teladan_tahsin_admin_token";
+    const PUBLIC_CACHE_KEY = "teladan_tahsin_public_cache_v1";
 
     // Distinct Visual Frame Themes per Jenjang (Prevents visual monotony)
     const JENJANG_THEMES = {
@@ -1217,6 +1291,8 @@
       searchQuery: "",
       activeAdminTab: "jadwal",
       expandedCardIds: new Set(),
+      lastDataSignature: "",
+      dataVersion: "",
       kelompok: [],
       pembimbing: [],
       ruang: [],
@@ -1313,8 +1389,56 @@
     };
 
     // =========================================================================
-    // INITIALIZATION
+    // INITIALIZATION (SWR INSTANT CACHE + SINGLE ROUND-TRIP)
     // =========================================================================
+    function loadCachedPublicData() {
+      if (IS_PREVIEW) return false;
+      try {
+        const raw = localStorage.getItem(PUBLIC_CACHE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.data) return false;
+        applyServerData(parsed.data, { skipCacheWrite: true });
+        document.getElementById("loadingSkeleton").classList.add("hidden");
+        document.getElementById("lastUpdatedLabel").textContent = "Menyinkronkan data terbaru...";
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function saveCachedPublicData(data) {
+      if (IS_PREVIEW || !data) return;
+      try {
+        localStorage.setItem(PUBLIC_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+      } catch (_) {}
+    }
+
+    function applyServerData(data, opts = {}) {
+      if (!data) return;
+      const nextSig = JSON.stringify(data);
+      const changed = nextSig !== state.lastDataSignature;
+
+      state.kelompok = data.kelompok || [];
+      state.pembimbing = data.pembimbing || [];
+      state.ruang = data.ruang || [];
+      state.anggota = data.anggota || [];
+
+      if (!state.isAdmin && !opts.skipCacheWrite) {
+        saveCachedPublicData(data);
+      }
+
+      if (changed) {
+        state.lastDataSignature = nextSig;
+        updateTopStats();
+        renderJenjangTabs();
+        renderPublicSchedule();
+        if (state.isAdmin) {
+          renderAllAdminTables();
+        }
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
       if (IS_PREVIEW) {
         document.getElementById("previewBanner").classList.remove("hidden");
@@ -1327,18 +1451,69 @@
         renderPublicSchedule();
       });
 
+      // Tampilkan cache lokal seketika agar pengguna tidak menunggu cold start
+      const hasWarmCache = loadCachedPublicData();
+
+      // Jika ada token tersimpan, langsung aktifkan mode admin & ambil getAdminData dalam 1 request
+      // (getAdminData memverifikasi token di server dan otomatis logout jika token kadaluarsa)
       if (state.adminToken) {
-        const valid = await verifySavedSession();
-        if (valid) {
-          setAdminMode(true, false);
-        } else {
-          state.adminToken = "";
-          sessionStorage.removeItem(SESSION_STORAGE_KEY);
-        }
+        setAdminMode(true, false);
       }
 
-      await refreshAllData();
+      await refreshAllData({ background: hasWarmCache });
+      startRealtimeSync();
     });
+
+    // =========================================================================
+    // REALTIME SYNC (POLLING VERSI RINGAN → AUTO-REFRESH SAAT SPREADSHEET BERUBAH)
+    // =========================================================================
+    const REALTIME_POLL_MS = 4000; // Interval cek versi data (hanya saat tab terlihat)
+    let realtimeTimer = null;
+    let realtimeBusy = false;
+
+    function scheduleRealtimeTick(delay = REALTIME_POLL_MS) {
+      clearTimeout(realtimeTimer);
+      realtimeTimer = setTimeout(realtimeTick, delay);
+    }
+
+    async function realtimeTick() {
+      if (IS_PREVIEW) return;
+      if (document.hidden || realtimeBusy) {
+        // Tab disembunyikan: berhenti polling, dilanjutkan oleh visibilitychange
+        if (!document.hidden) scheduleRealtimeTick();
+        return;
+      }
+      realtimeBusy = true;
+      try {
+        const res = await apiGet("getVersion", { _t: Date.now() });
+        const remoteVer = res && res.success && res.version ? String(res.version) : "";
+        if (remoteVer && state.dataVersion && remoteVer !== state.dataVersion) {
+          const before = state.lastDataSignature;
+          await refreshAllData({ background: true });
+          if (state.lastDataSignature !== before) {
+            showToast("Data diperbarui otomatis dari Spreadsheet.", "info");
+          }
+        } else if (remoteVer && !state.dataVersion) {
+          state.dataVersion = remoteVer;
+        }
+      } catch (_) {
+        // Abaikan error jaringan sesaat; polling berikutnya akan mencoba lagi
+      } finally {
+        realtimeBusy = false;
+        scheduleRealtimeTick();
+      }
+    }
+
+    function startRealtimeSync() {
+      if (IS_PREVIEW) return;
+      scheduleRealtimeTick(REALTIME_POLL_MS);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) scheduleRealtimeTick(0); // Cek seketika saat kembali ke tab
+        else clearTimeout(realtimeTimer);
+      });
+      window.addEventListener("online", () => scheduleRealtimeTick(0));
+      window.addEventListener("focus", () => scheduleRealtimeTick(0));
+    }
 
     // =========================================================================
     // API COMMUNICATION LAYER
@@ -1413,43 +1588,47 @@
       return json;
     }
 
-    async function refreshAllData() {
+    async function refreshAllData(options = {}) {
+      const { background = false, force = false } = options;
       const skeleton = document.getElementById("loadingSkeleton");
       const grid = document.getElementById("scheduleGrid");
       const errorBanner = document.getElementById("errorBanner");
+      const hasRenderedData = Boolean(state.lastDataSignature);
 
-      skeleton.classList.remove("hidden");
-      grid.classList.add("hidden");
+      if (!background && !hasRenderedData) {
+        skeleton.classList.remove("hidden");
+        grid.classList.add("hidden");
+      }
       errorBanner.classList.add("hidden");
 
+      const t0 = performance.now();
       try {
         // Data admin diambil lewat POST agar token sesi tidak terekspos di URL query string
         const res = state.isAdmin
-          ? await apiPost("getAdminData")
-          : await apiGet("getPublicData");
+          ? await apiPost("getAdminData", force ? { force: true } : {})
+          : await apiGet("getPublicData", force ? { force: "1" } : {});
 
         if (!res.success) {
+          if (res.error && res.error.toLowerCase().includes("sesi")) {
+            return;
+          }
           throw new Error(res.error || "Gagal mengambil data dari server.");
         }
 
-        state.kelompok = res.data.kelompok || [];
-        state.pembimbing = res.data.pembimbing || [];
-        state.ruang = res.data.ruang || [];
-        state.anggota = res.data.anggota || [];
+        applyServerData(res.data);
+        if (res.version) state.dataVersion = String(res.version);
 
-        updateTopStats();
-        renderJenjangTabs();
-        renderPublicSchedule();
-
-        if (state.isAdmin) {
-          renderAllAdminTables();
-        }
-
+        const totalMs = Math.round(performance.now() - t0);
         const nowStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-        document.getElementById("lastUpdatedLabel").textContent = `Sinkronisasi terakhir: ${nowStr} WIB`;
+        const srvNote = typeof res.ms === "number" ? ` • server ${res.ms}ms, total ${(totalMs / 1000).toFixed(1)}s` : "";
+        document.getElementById("lastUpdatedLabel").textContent = `Sinkronisasi: ${nowStr} WIB${srvNote}`;
       } catch (err) {
-        document.getElementById("errorBannerText").textContent = err.message;
-        errorBanner.classList.remove("hidden");
+        if (!hasRenderedData) {
+          document.getElementById("errorBannerText").textContent = err.message;
+          errorBanner.classList.remove("hidden");
+        } else {
+          showToast("Sinkronisasi latar belakang gagal: " + err.message, "error");
+        }
       } finally {
         skeleton.classList.add("hidden");
       }
@@ -1504,7 +1683,15 @@
         state.adminToken = res.data.token;
         sessionStorage.setItem(SESSION_STORAGE_KEY, state.adminToken);
         closeModal("loginModal");
-        setAdminMode(true, true);
+
+        if (res.data.adminData) {
+          setAdminMode(true, false);
+          applyServerData(res.data.adminData);
+          const nowStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+          document.getElementById("lastUpdatedLabel").textContent = `Sinkronisasi: ${nowStr} WIB`;
+        } else {
+          setAdminMode(true, true);
+        }
         showToast("Berhasil masuk sebagai Admin Pengelola Tahsin.", "success");
       } catch (err) {
         errBox.textContent = "Gagal terhubung ke server: " + err.message;
@@ -1864,7 +2051,7 @@
 
                 <!-- Compartment 2: 2-Column Bento Sub-Frames (Ruang & Jadwal) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <!-- Ruang / Tempat Sub-Frame -->
+                  <!-- Tempat Sub-Frame -->
                   <div class="sub-frame rounded-xl p-2.5 flex items-start gap-2.5">
                     <div class="w-7 h-7 rounded-lg bg-surface border border-line text-brand flex items-center justify-center shrink-0 mt-0.5">
                       <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
@@ -1873,7 +2060,7 @@
                       </svg>
                     </div>
                     <div class="min-w-0">
-                      <span class="text-[10px] font-bold uppercase tracking-wider text-muted block">Ruang / Tempat</span>
+                      <span class="text-[10px] font-bold uppercase tracking-wider text-muted block">Tempat</span>
                       <span class="text-xs font-semibold text-ink block leading-snug">${highlightText(
                         g.ruangNama,
                         state.searchQuery
@@ -1912,9 +2099,9 @@
                 </div>
 
                 <!-- Compartment 3: Framed Member Roster Box -->
-                <div class="rounded-xl border border-[#D4DCD5] bg-surface overflow-hidden mt-auto">
-                  <div class="px-3.5 py-2 bg-[#F4F7F4] border-b border-[#E2E8E3] flex items-center justify-between">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-ink/75">
+                <div class="member-frame mt-auto">
+                  <div class="member-frame-header px-3.5 py-2.5 flex items-center justify-between">
+                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-deep">
                       Anggota Kelompok
                     </span>
                     <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${theme.countPill} tabular-nums">
@@ -1926,7 +2113,7 @@
                     g.members.length === 0
                       ? `<p class="px-3.5 py-3 text-xs text-muted italic">Belum ada anggota yang ditempatkan.</p>`
                       : `
-                    <ol class="divide-y divide-[#EFF3EF] text-xs text-ink">
+                    <ol class="member-frame-list text-xs text-ink">
                       ${g.members
                         .map(
                           (m, idx) => `
@@ -1934,7 +2121,7 @@
                           !isExpanded && idx >= maxVisible ? "hidden print-show-member" : ""
                         }">
                           <div class="flex items-center gap-2 min-w-0">
-                            <span class="w-5 h-5 rounded-md bg-canvas border border-line text-[10px] font-bold text-muted flex items-center justify-center shrink-0 tabular-nums">
+                            <span class="member-frame-num w-5 h-5 rounded-md text-[10px] font-bold flex items-center justify-center shrink-0 tabular-nums">
                               ${idx + 1}
                             </span>
                             <span class="font-medium text-ink truncate">${highlightText(
@@ -1960,7 +2147,7 @@
                       <button
                         type="button"
                         onclick="toggleCardMembers('${g.id_kelompok}')"
-                        class="no-print w-full py-2 px-3.5 bg-canvas/60 hover:bg-brand-light border-t border-line text-[11px] font-bold text-brand flex items-center justify-center gap-1 transition"
+                        class="no-print w-full py-2 px-3.5 bg-brand-light hover:bg-[#D3E6DA] border-t-2 border-[#1B5E43] text-[11px] font-bold text-brand flex items-center justify-center gap-1 transition"
                       >
                         ${
                           isExpanded
@@ -2315,7 +2502,8 @@
         }
         closeModal("kelompokModal");
         showToast(res.message || "Kelompok berhasil disimpan.", "success");
-        await refreshAllData();
+        if (res.adminData) applyServerData(res.adminData);
+        else await refreshAllData({ background: true });
       } catch (err) {
         showToast("Terjadi kesalahan: " + err.message, "error");
       } finally {
@@ -2338,7 +2526,8 @@
             return;
           }
           showToast("Kelompok berhasil dihapus.", "success");
-          await refreshAllData();
+          if (res.adminData) applyServerData(res.adminData);
+          else await refreshAllData({ background: true });
         }
       );
     }
@@ -2407,7 +2596,8 @@
         }
         closeModal("pembimbingModal");
         showToast(res.message || "Data pembimbing disimpan.", "success");
-        await refreshAllData();
+        if (res.adminData) applyServerData(res.adminData);
+        else await refreshAllData({ background: true });
       } catch (err) {
         showToast("Kesalahan: " + err.message, "error");
       } finally {
@@ -2430,7 +2620,8 @@
             return;
           }
           showToast("Pembimbing berhasil dihapus.", "success");
-          await refreshAllData();
+          if (res.adminData) applyServerData(res.adminData);
+          else await refreshAllData({ background: true });
         }
       );
     }
@@ -2500,7 +2691,8 @@
         }
         closeModal("ruangModal");
         showToast(res.message || "Data ruang berhasil disimpan.", "success");
-        await refreshAllData();
+        if (res.adminData) applyServerData(res.adminData);
+        else await refreshAllData({ background: true });
       } catch (err) {
         showToast("Kesalahan: " + err.message, "error");
       } finally {
@@ -2523,7 +2715,8 @@
             return;
           }
           showToast("Ruang berhasil dihapus.", "success");
-          await refreshAllData();
+          if (res.adminData) applyServerData(res.adminData);
+          else await refreshAllData({ background: true });
         }
       );
     }
@@ -2627,7 +2820,8 @@
         }
         closeModal("anggotaModal");
         showToast(res.message || "Data anggota berhasil disimpan.", "success");
-        await refreshAllData();
+        if (res.adminData) applyServerData(res.adminData);
+        else await refreshAllData({ background: true });
       } catch (err) {
         showToast("Kesalahan: " + err.message, "error");
       } finally {
@@ -2650,7 +2844,8 @@
             return;
           }
           showToast("Anggota berhasil dihapus.", "success");
-          await refreshAllData();
+          if (res.adminData) applyServerData(res.adminData);
+          else await refreshAllData({ background: true });
         }
       );
     }
